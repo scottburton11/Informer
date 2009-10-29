@@ -1,0 +1,38 @@
+= Informer
+
+Running Informer will watch something, formulate messages about it, 
+and report back. It is useful for reporting the status of a host system.
+
+Informer is simple and extensible. New arbitrary watchers and reporters 
+just need to be namespaced within the Watcher or Reporter module and respond 
+to #report. See source for details.
+
+
+== Examples
+
+* Print the state of two processes, plus the current hostname and ip address for en1, to stdout
+    Informer.watch do
+      process "ruby"
+      process "irb", :handle => "Interactive Ruby"
+      hostname "en1"
+    end
+
+* Report whether ssh-agent is running on the LCD screen of a Rackable Systems Roamer ILOM device
+    informer = Informer.new("lcd")
+    informer.watchers << Watcher::Process.new("ssh-agent", :handle => "SSH Keychain Agent")
+    informer.report
+
+== Note on Patches/Pull Requests
+ 
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but
+   bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+== Copyright
+
+Copyright (c) 2009 Scott Burton. See LICENSE for details.

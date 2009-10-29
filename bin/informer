@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require 'lib/informer'
+
+Informer.watch do
+  process "ruby", :handle => "Ruby"
+  process "irb"
+  hostname "en1"
+end
