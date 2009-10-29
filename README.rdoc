@@ -1,11 +1,8 @@
 = Informer
 
-Running Informer will watch something, formulate messages about it, 
-and report back. It is useful for reporting the status of a host system.
+Running Informer will watch something, formulate messages about it, and report back. It is useful for reporting the status of a host system.
 
-Informer is simple and extensible. New arbitrary watchers and reporters 
-just need to be namespaced within the Watcher or Reporter module and respond 
-to #report. See source for details.
+Informer is simple and extensible. New arbitrary watchers and reporters just need to be namespaced within the Watcher or Reporter module and respond to #report. See source for details.
 
 
 == Examples
@@ -30,7 +27,7 @@ to #report. See source for details.
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
+  bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright
