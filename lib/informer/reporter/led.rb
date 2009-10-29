@@ -1,7 +1,7 @@
 module Reporter
   class Lcd
     
-    LCD_DEV = "/dev/tty" # "/dev/ttyS1"
+    LCD_DEV = "/dev/ttyS1"
     
     def self.report(messages)
       messages.each do |message|

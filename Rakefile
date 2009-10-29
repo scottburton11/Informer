@@ -7,7 +7,7 @@ require 'informer'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "Informer"
+    gem.name = "informer"
     gem.summary = %Q{Informer gathers info and shoots it over the wire}
     gem.description = %Q{Informer is a flexible information gathering and reporting system.}
     gem.email = "scottburton11@gmail.com"

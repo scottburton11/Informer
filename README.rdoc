@@ -1,6 +1,6 @@
 = Informer
 
-Running Informer will watch something, formulate messages about it,  and report back somehow. It is useful for extremely simplified reporting the status of a host system.
+Running Informer will watch something, formulate messages about it,  and report back somehow. It is useful for extremely simplified reporting on the status of a host system.
 
 Informer is simple and extensible. New arbitrary watchers and reporters just need to be namespaced within the Watcher or Reporter module and respond to #report. See source for details.
 
