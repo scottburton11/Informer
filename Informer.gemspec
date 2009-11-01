@@ -1,12 +1,12 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{Informer}
-  s.version = "0.1.0"
+  s.name = %q{informer}
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Scott Burton"]
-  s.date = %q{2009-10-29}
+  s.date = %q{2009-10-31}
   s.default_executable = %q{informer}
   s.description = %q{Informer is a flexible information gathering and reporting system.}
   s.email = %q{scottburton11@gmail.com}
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
+     "Informer.gemspec",
      "LICENSE",
      "README.rdoc",
      "Rakefile",
@@ -32,7 +33,7 @@ Gem::Specification.new do |s|
      "features/watcher.feature",
      "lib/informer.rb",
      "lib/informer/basic_watcher.rb",
-     "lib/informer/reporter/led.rb",
+     "lib/informer/reporter/lcd.rb",
      "lib/informer/reporter/standard_output.rb",
      "lib/informer/watcher/hostname.rb",
      "lib/informer/watcher/process.rb",
