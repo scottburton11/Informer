@@ -5,7 +5,7 @@ require 'informer/basic_watcher'
 require 'informer/watcher/hostname'
 require 'informer/watcher/process'
 
-require 'informer/reporter/led'
+require 'informer/reporter/lcd'
 require 'informer/reporter/standard_output'
 
 class Informer

@@ -1,8 +1,157 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ruby 
+#
+
+# == Synopsis 
+#   Running Informer will watch something, formulate messages about it,  and report back somehow. 
+#   It is useful for extremely simplified reporting on the status of a host system.
+#
+# == Examples
+#
+#   informer -p process-name -p process-name2 -n en1
+#
+# == Usage 
+#   informer [options]
+#
+#   For help use: informer -h
+#
+# == Options
+#   -p, --process proc  Return the status of the process named 'proc'
+#   -n, --hostname if   Return the hostname and IP address of interface 'if'. Default is 'eth0'
+#   -l, --lcd           Use the LCD display at ttyS1; Default is Rackable Systems Roamer device
+#   -h, --help          Displays help message
+#   -v, --version       Display the version, then exit
+#   -q, --quiet         Output as little as possible, overrides verbose
+#   -V, --verbose       Verbose output
+#
+# == Author
+#   Scott Burton
+#
+# == Copyright
+#   Copyright (c) 2009 Scott Burton. See LICENSE
+# 
+# Ruby command-line skeleton courtesy of http://blog.infinitered.com/entries/show/5
+
+require 'optparse' 
+require 'rdoc/usage'
+require 'ostruct'
+require 'date'
+
 require 'lib/informer'
 
-Informer.watch do
-  process "ruby", :handle => "Ruby"
-  process "irb"
-  hostname "en1"
+class App
+  VERSION = '0.2.0'
+  
+  attr_reader :options
+
+  def initialize(arguments, stdin)
+    @arguments = arguments
+    @stdin = stdin
+    
+    # Set defaults
+    @options = OpenStruct.new
+    @options.verbose = false
+    @options.quiet = false
+    @options.reporter = "standard_output"
+    
+    @options.processes = []
+  end
+
+  # Parse options, check arguments, then process the command
+  def run
+        
+    if parsed_options?
+      
+      puts "Start at #{DateTime.now}\n\n" if @options.verbose
+      
+      output_options if @options.verbose
+            
+      process_arguments            
+      process_command
+      
+      puts "\nFinished at #{DateTime.now}" if @options.verbose
+      
+    else
+      output_usage
+    end
+      
+  end
+  
+  protected
+  
+    def parsed_options?
+      
+      # Specify options
+      opts = OptionParser.new 
+      opts.on('-v', '--version')    { output_version ; exit 0 }
+      opts.on('-h', '--help')       { output_help }
+      opts.on('-V', '--verbose')    { @options.verbose = true }  
+      opts.on('-q', '--quiet')      { @options.quiet = true }
+      opts.on('-l', '--lcd')        { @options.reporter = "lcd"}
+      opts.on('-p label', '--processes label')  { |p| @options.processes << p }
+      opts.on('-n iface', '--hostname interface')   { |i| @options.hostname = true; @options.interface = i }
+            
+      opts.parse!(@arguments) rescue return false
+      
+      process_options
+      true      
+    end
+
+    # Performs post-parse processing on options
+    def process_options
+      @options.verbose = false if @options.quiet
+    end
+    
+    def output_options
+      puts "Options:\n"
+      
+      @options.marshal_dump.each do |name, val|        
+        puts "  #{name} = #{val}"
+      end
+    end
+
+    # True if required arguments were provided
+    def arguments_valid?
+      
+    end
+    
+    # Setup the arguments
+    def process_arguments
+      # @interface = ARGV[0]
+    end
+    
+    def output_help
+      output_version
+      RDoc::usage() #exits app
+    end
+    
+    def output_usage
+      RDoc::usage('usage') # gets usage from comments above
+    end
+    
+    def output_version
+      puts "#{File.basename(__FILE__)} version #{VERSION}"
+    end
+    
+    def process_command
+      
+      informer = Informer.new(@options.reporter)
+      
+      @options.processes.each do |process|
+        informer.watchers << Watcher::Process.new(process)
+      end
+      
+      informer.watchers << Watcher::Hostname.new(@options.interface) if @options.hostname
+      
+      informer.report
+      
+    end
+
+    def process_standard_input
+      input = @stdin.read      
+    end
 end
+
+
+# Create and run the application
+app = App.new(ARGV, STDIN)
+app.run

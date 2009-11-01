@@ -3,12 +3,13 @@ module Watcher
 
     attr_reader :ip, :hostname
 
-    def initialize(interface = "eth0")
+    def initialize(interface = "eth0", &block)
+      @custom_message = block if block_given?
       @interface = interface
     end
 
     def report
-      gather
+      return @custom_message.call(self) if @custom_message
       message
     end
 
@@ -16,11 +17,12 @@ module Watcher
       @message ||= "#{hostname}\n#{ip}"
     end
 
-    protected
-
-    def gather
-      @ip = get_ip_address
-      @hostname = get_hostname
+    def ip
+      @ip ||= get_ip_address
+    end
+    
+    def hostname
+      @hostname ||= get_hostname
     end
 
     private

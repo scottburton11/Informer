@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe Watcher::Process do
+include ProcessHelpers
 
-  include ProcessHelpers
+describe Watcher::Process do
   
   before(:each) do
     @watcher = Watcher::Process.new('process-name', :handle => 'Process Handle')
@@ -34,25 +34,45 @@ describe Watcher::Process do
       
     end
     
-    describe "privately" do
-      
-      it "calls 'ps aux' with a system call" do
-        @watcher.should_receive(:`).with("ps aux").and_return(ps_aux)
-        @watcher.send(:processes).should eql(ps_aux.chomp)
-      end
-      
-      it "says that :running? is true when the process exists" do
-        @watcher.should_receive(:processes).and_return("process-1\nprocess-2\nprocess-name")
-        @watcher.should be_running
-      end
-      
-      it "says that :running? is false when the process doesn't exist" do
-        @watcher.should_receive(:processes).and_return("process-1\nprocess-2")
-        @watcher.should_not be_running
-      end
-      
+  end
+  
+end
+
+describe Watcher::Process, "with a custom message" do
+  
+  before(:each) do
+    @watcher = Watcher::Process.new('process-name', :handle => 'Process Handle') do |p|
+      "#{p.handle}: #{p.running? ? %q{Active}: %q{Inactive}}"
     end
-    
+    @watcher.stub!(:running?).and_return(true)
+  end
+  
+  it "has access to instance data" do
+    @watcher.report.should eql("Process Handle: Active")
+  end
+end
+
+
+
+describe Watcher::Process, "privately" do
+  
+  before(:each) do
+    @watcher = Watcher::Process.new('process-name', :handle => 'Process Handle')
+  end
+  
+  it "calls 'ps aux' with a system call" do
+    @watcher.should_receive(:`).with("ps -o %cpu -o %mem -o comm -o pid -o user -axc").and_return(ps_aux)
+    @watcher.send(:processes).should eql(ps_aux.chomp)
+  end
+  
+  it "says that :running? is true when the process exists" do
+    @watcher.stub!(:command).and_return("ruby")
+    @watcher.should be_running
+  end
+  
+  it "says that :running? is false when the process doesn't exist" do
+    @watcher.stub!(:command).and_return("not-ruby")
+    @watcher.should_not be_running
   end
   
 end
